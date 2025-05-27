@@ -1,0 +1,19 @@
+{
+  "name": "bundlr-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "generate": "node generate-wallet.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@irys/sdk": "^0.2.11",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0"
+  }
+}
