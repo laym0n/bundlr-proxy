@@ -13,7 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "@irys/sdk": "^0.2.11",
+    "@ucanto/principal": "^9.0.2",
+    "@web3-storage/w3up-client": "^17.3.0",
     "body-parser": "^2.2.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "multer": "^2.0.0"
   }
 }
