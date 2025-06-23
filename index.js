@@ -4,8 +4,6 @@ import Irys from '@irys/sdk';
 import multer from 'multer';
 import { create } from '@web3-storage/w3up-client'
 
-const upload = multer({ dest: 'uploads/' });
-
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 
@@ -14,19 +12,15 @@ const key = JSON.parse(fs.readFileSync('./bundlr-key.json', 'utf8'));
 const irys = new Irys({
   url: "https://devnet.bundlr.network",
   token: "arweave",
-  key: key
+  key
 });
-
-const web3StorageClient = await create()
-await web3StorageClient.login('victor_k02@mail.ru')
-await web3StorageClient.setCurrentSpace('did:key:z6MkqSCAttYC2RrtcyLEGeRcNv8z1aJu5BoSH2cz9a6BD1wr')
-
-app.post('/upload', async (req, res) => {
+app.post('/upload/:userId', async (req, res) => {
   try {
+    const userId = req.params.userId;
     const jsonData = JSON.stringify(req.body);
 
     const tx = await irys.upload(jsonData, {
-      tags: [{ name: "Content-Type", value: "application/json" }]
+      tags: [{ name: "Content-Type", value: "application/json" }, { name: "User-Id", value: userId }]
     });
 
     console.log("✅ Uploaded to Irys Devnet:", tx.id);
@@ -36,6 +30,15 @@ app.post('/upload', async (req, res) => {
     res.status(500).json({ error: "Upload failed", details: err.message });
   }
 });
+
+const userEmail = 'victor_k02@mail.ru';
+const web3StorageSpace = 'did:key:z6MkqSCAttYC2RrtcyLEGeRcNv8z1aJu5BoSH2cz9a6BD1wr';
+
+const web3StorageClient = await create()
+await web3StorageClient.login(userEmail)
+await web3StorageClient.setCurrentSpace(web3StorageSpace)
+
+const upload = multer({ dest: 'uploads/' });
 
 app.post('/upload-web3', upload.single('file'), async (req, res) => {
   try {
@@ -55,7 +58,7 @@ app.post('/upload-web3', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: "Upload to Web3.Storage failed", details: err.message });
   } finally {
     if (req.file?.path) {
-      fs.unlink(req.file.path, () => {});
+      fs.unlink(req.file.path, () => { });
     }
   }
 });
